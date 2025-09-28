@@ -1,0 +1,162 @@
+<!--index.html-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPU-C</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        crossorigin="anonymous"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+        <!-- Your Custom Files -->
+    <link rel="stylesheet" href="css/style.css">
+    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/register.js"></script>
+    <script type="module" src="js/login.js"></script>
+        <script type="module" src="js/logout.js"></script>
+    <script type="module" src="js/leaderboard.js"></script>
+</head>
+
+
+<body>
+<!-- LPU BANNER / DESKTOP -->
+<nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-none d-md-block"
+style="background-color: #8c0001; max-height: 113px;">
+<div class="container-fluid d-flex">
+    <a class="navbar-brand" href="index.html">
+        <img src="lpu_banner.png" class="desktop-image" style="max-height: 90px;" alt="LPU-C">
+    </a>
+</div>
+</nav>
+
+<!-- LPU BANNER / MOBILE -->
+    <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-block d-md-none"
+        style="background-color: #8c0001; max-height: 113px;">
+        <div class="container-fluid d-flex justify-content-center">
+            <a class="navbar-brand" href="index.html">
+                <img src="lpu_banner.png" class="mobile-image" style="max-height: 93px;" alt="LPU-C">
+            </a>
+        </div>
+    </nav>
+
+        <!-- MENU BAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4" style="background-color: #dde0e4;">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#" data-target="dashboard"><i class="fas fa-home"></i>
+                            Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#" data-target="leaderboard"><i class="fas fa-clock"></i>
+                            History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#" data-target="login"><i class="fas fa-sign-in"></i>
+                            Login/Register</a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <button id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i><span class="d-none d-md-inline"> Log-out</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Header -->
+            <div class="card mb-4 shadow">
+                <div class="card-header text-white text-center"style="background-color: #8c0001">
+                    <h3>Welcome, <span id="studentName">Christian Jude Eraldo</span></h3>
+                </div>
+            </div>
+
+            <!-- Dashboard Tabs -->
+            <div class="card shadow">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="dashboardTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="latest-tab" data-bs-toggle="tab" data-bs-target="#latest" type="button" role="tab" style="color: #8c0001">Latest Result</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" style="color: #8c0001">History</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" style="color: #8c0001">Profile</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body tab-content" id="dashboardTabsContent">
+                    <!-- Latest Result Tab -->
+                    <div class="tab-pane fade show active" id="latest" role="tabpanel">
+                        <div class="row align-items-center">
+                            <div class="col-md-7">
+                                <h5>Status: <span id="latestStatus" class="fw-bold text-success">✅ Normal</span></h5>
+                                <p id="latestRecommendation" class="mb-3">Try to rest earlier tonight; avoid screen time after 10 PM.</p>
+                            </div>
+                            <div class="col-md-5 text-center">
+                                <img id="latestPhoto" src="img/photo_placeholder.png" alt="Captured Photo" class="img-fluid rounded shadow" style="max-height: 150px;">
+                                <div class="mt-2 text-muted">Captured photo preview</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- History Tab -->
+                    <div class="tab-pane fade" id="history" role="tabpanel">
+                        <h5>Previous Scans</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyList">
+                                <!-- Example row, replace with JS -->
+                                <tr>
+                                    <td>2025-09-27</td>
+                                    <td>08:15 AM</td>
+                                    <td>Normal</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-09-26</td>
+                                    <td>07:50 AM</td>
+                                    <td>Sleep-Deprived</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Profile Tab -->
+                    <div class="tab-pane fade" id="profile" role="tabpanel">
+                        <h5>Student Info</h5>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>ID:</strong> <span id="profileId">202312345</span></li>
+                            <li class="list-group-item"><strong>Name:</strong> <span id="profileName">Juan Dela Cruz</span></li>
+                            <li class="list-group-item"><strong>Course/Year:</strong> <span id="profileCourse">BSCS 3rd Year</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
