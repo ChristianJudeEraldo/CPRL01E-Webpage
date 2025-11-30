@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Faculty Insights</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    .stat-card { border-radius:8px; }
+    .trend-controls .btn { min-width:90px; }
+    .status-dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:8px; }
+    .status-normal { background:#198754; }
+    .status-flag { background:#dc3545; }
+    .student-photo { max-height:40px; }
+  </style>
+</head>
+<body>
+
+  <!-- Banner -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-none d-md-block" style="background-color: #8c0001; max-height:113px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><img src="img/lpu_banner.png" alt="LPU" style="max-height:90px;"></a>
+    </div>
+  </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-block d-md-none" style="background-color: #8c0001; max-height:113px;">
+    <div class="container-fluid d-flex justify-content-center"><a class="navbar-brand" href="#"><img src="img/lpu_banner.png" alt="LPU" style="max-height:90px;"></a></div>
+  </nav>
+
+  <!-- Menu -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4" style="background-color:#dde0e4;">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse show">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link text-dark" href="faculty_homepage.html" id="studentsNav">Students</a></li>
+          <li class="nav-item"><a class="nav-link active text-dark" href="#" id="insightsNav">Insights</a></li>
+        </ul>
+        <div><button id="logoutBtn" class="btn btn-outline-danger rounded-pill px-4 py-2" style="color:#8c0001;"><i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Log-out</span></button></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mt-5">
+    <div class="card mb-4 shadow">
+      <div class="card-header text-white" style="background-color:#8c0001">
+        <h3 class="mb-0">Faculty Insights</h3>
+      </div>
+      <div class="card-body">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-8">
+            <h5 class="mb-0">Overview</h5>
+            <small class="text-muted">Quick metrics and trends for sleep-deprivation flags</small>
+          </div>
+          <div class="col-md-4 text-end">
+            <button id="exportCsv" class="btn btn-sm btn-outline-primary"><i class="fas fa-file-csv"></i> Export CSV</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top stats -->
+    <div class="row mb-4">
+      <div class="col-md-4">
+        <div class="p-3 bg-white stat-card shadow-sm">
+          <h6 class="mb-1">Scanned Today</h6>
+          <h2 id="scannedToday">1</h2>
+          <small class="text-muted">Scans recorded today</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-white stat-card shadow-sm">
+          <h6 class="mb-1">Flagged (Sleep-Deprived)</h6>
+          <h2 id="flaggedToday">1</h2>
+          <small class="text-muted">Unique students flagged today</small>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-3 bg-white stat-card shadow-sm">
+          <h6 class="mb-1">Current Distribution</h6>
+          <div><span class="status-dot status-normal"></span>Normal <span id="countNormal" class="ms-2 fw-bold">0</span></div>
+          <div class="mt-1"><span class="status-dot status-flag"></span>Sleep-Deprived <span id="countFlagged" class="ms-2 fw-bold">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Overall Sleep Deprivation Trend</h5>
+          <div class="trend-controls btn-group" role="group" aria-label="timeframe">
+            <button class="btn btn-outline-primary active" data-range="7">Last 7 days</button>
+            <button class="btn btn-outline-primary" data-range="30">Last 30 days</button>
+            <button class="btn btn-outline-primary" data-range="90">Last 90 days</button>
+          </div>
+        </div>
+
+        <canvas id="trendChart" height="120"></canvas>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Current Category Distribution</h5>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <canvas id="pieChart" height="220"></canvas>
+          </div>
+          <div class="col-md-6">
+            <canvas id="barChart" height="220"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // sample scan data (replace with server data)
+    // history entries: { studentId, date: 'YYYY-MM-DD', result: 'Normal'|'Sleep-Deprived' }
+    const scans = [
+      {studentId:'202312001', date:'2025-11-30', result:'Normal'},
+      {studentId:'202312002', date:'2025-11-30', result:'Normal'},
+      {studentId:'202312003', date:'2025-11-29', result:'Normal'},
+      {studentId:'202312001', date:'2025-11-29', result:'Normal'},
+      {studentId:'202312004', date:'2025-11-28', result:'Normal'},
+      {studentId:'202312005', date:'2025-11-27', result:'Normal'},
+      {studentId:'202312006', date:'2025-11-26', result:'Sleep-Deprived'},
+      {studentId:'202312003', date:'2025-11-25', result:'Sleep-Deprived'},
+      {studentId:'202312007', date:'2025-11-24', result:'Normal'},
+      // add more as needed
+    ];
+
+    // utilities
+    const toDate = s => new Date(s + 'T00:00:00');
+    const formatDate = d => d.toISOString().slice(0,10);
+
+    function uniqueFlaggedOn(dateStr) {
+      const set = new Set();
+      scans.forEach(s => { if (s.date === dateStr && s.result === 'Sleep-Deprived') set.add(s.studentId); });
+      return set.size;
+    }
+
+    function countScansOn(dateStr) {
+      return scans.filter(s => s.date === dateStr).length;
+    }
+
+    function aggregateFlagsLastNDays(n) {
+      const labels = [];
+      const data = [];
+      for (let i = n-1; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const ds = formatDate(d);
+        labels.push(ds);
+        data.push(uniqueFlaggedOn(ds));
+      }
+      return {labels, data};
+    }
+
+    function distributionCurrent() {
+      let normal = 0, flagged = 0;
+      // use latest scan per student - find last date per student and take that result
+      const lastMap = new Map();
+      scans.forEach(s => {
+        const prev = lastMap.get(s.studentId);
+        if (!prev || s.date > prev.date) lastMap.set(s.studentId, s);
+      });
+      lastMap.forEach(v => {
+        if (v.result === 'Sleep-Deprived') flagged++; else normal++;
+      });
+      return { normal, flagged };
+    }
+
+    // init stats
+    function renderTopStats() {
+      const today = formatDate(new Date());
+      document.getElementById('scannedToday').textContent = countScansOn(today);
+      document.getElementById('flaggedToday').textContent = uniqueFlaggedOn(today);
+      const dist = distributionCurrent();
+      document.getElementById('countNormal').textContent = dist.normal;
+      document.getElementById('countFlagged').textContent = dist.flagged;
+    }
+
+    // charts
+    let trendChart=null, pieChart=null, barChart=null;
+
+    function drawTrend(nDays) {
+      const agg = aggregateFlagsLastNDays(nDays);
+      const ctx = document.getElementById('trendChart').getContext('2d');
+      if (trendChart) trendChart.destroy();
+      trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: agg.labels,
+          datasets: [{ label: 'Unique students flagged', data: agg.data, borderColor:'#dc3545', backgroundColor:'rgba(220,53,69,0.1)', tension:0.2, fill:true }]
+        },
+        options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, precision:0}}}
+      });
+    }
+
+    function drawDistribution() {
+      const dist = distributionCurrent();
+      // pie
+      const pctx = document.getElementById('pieChart').getContext('2d');
+      if (pieChart) pieChart.destroy();
+      pieChart = new Chart(pctx, {
+        type:'pie',
+        data:{ labels:['Normal','Sleep-Deprived'], datasets:[{ data:[dist.normal, dist.flagged], backgroundColor:['#198754','#dc3545'] }]},
+        options:{ responsive:true, plugins:{legend:{position:'bottom'}}}
+      });
+      // bar
+      const bctx = document.getElementById('barChart').getContext('2d');
+      if (barChart) barChart.destroy();
+      barChart = new Chart(bctx, {
+        type:'bar',
+        data:{ labels:['Normal','Sleep-Deprived'], datasets:[{ label:'Students', data:[dist.normal, dist.flagged], backgroundColor:['#198754','#dc3545'] }]},
+        options:{ responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, precision:0}}}
+      });
+    }
+
+    // controls
+    document.querySelectorAll('.trend-controls button').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        document.querySelectorAll('.trend-controls button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const days = parseInt(btn.getAttribute('data-range'),10) || 7;
+        drawTrend(days);
+      });
+    });
+
+    // export minimal CSV of scans
+    document.getElementById('exportCsv').addEventListener('click', ()=>{
+      const rows = [['studentId','date','result'], ...scans.map(s=>[s.studentId,s.date,s.result])];
+      const csv = rows.map(r=>r.map(c=>`"${(c||'').toString().replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'scan_insights.csv'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', ()=> { location.href='index.html'; });
+
+    // initial render
+    renderTopStats();
+    drawTrend(7);
+    drawDistribution();
+
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
