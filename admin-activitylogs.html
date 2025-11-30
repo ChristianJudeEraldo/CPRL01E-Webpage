@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Activity Logs</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+  <style>
+    .stat-card { border-radius: 8px; background: #f8f9fa; border-left: 4px solid #8c0001; }
+    .badge-create { background: #28a745; }
+    .badge-update { background: #17a2b8; }
+    .badge-delete { background: #dc3545; }
+    .badge-login { background: #007bff; }
+    .badge-logout { background: #6c757d; }
+    .badge-reset { background: #ffc107; }
+    .table-section { background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .icon-create { color: #28a745; }
+    .icon-update { color: #17a2b8; }
+    .icon-delete { color: #dc3545; }
+    .icon-login { color: #007bff; }
+    .icon-logout { color: #6c757d; }
+    .icon-reset { color: #ffc107; }
+  </style>
+</head>
+<body style="background-color: #f5f5f5;">
+
+  <!-- Banner -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-none d-md-block" style="background-color: #8c0001; max-height: 113px;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="img/lpu_banner.png" alt="LPU" style="max-height: 90px;">
+      </a>
+    </div>
+  </nav>
+
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4 d-block d-md-none" style="background-color: #8c0001; max-height: 113px;">
+    <div class="container-fluid d-flex justify-content-center">
+      <a class="navbar-brand" href="#">
+        <img src="img/lpu_banner.png" alt="LPU" style="max-height: 90px;">
+      </a>
+    </div>
+  </nav>
+
+  <!-- Menu -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-2 px-4" style="background-color: #dde0e4;">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="adminNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link text-dark" href="admin_management.html">Users</a></li>
+          <li class="nav-item"><a class="nav-link active text-dark" href="#">Activity Logs</a></li>
+        </ul>
+        <div><button class="btn btn-outline-danger rounded-pill px-4 py-2" style="color: #8c0001;">
+          <i class="fas fa-sign-out-alt"></i> <span class="d-none d-md-inline">Log-out</span>
+        </button></div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid mt-4 px-4">
+
+    <!-- Header Card -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header text-white" style="background-color: #8c0001;">
+        <h3 class="mb-0">Activity Logs</h3>
+      </div>
+      <div class="card-body">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-8">
+            <h5 class="mb-0">System Activity Tracking</h5>
+            <small class="text-muted">Monitor all admin actions for transparency and security</small>
+          </div>
+          <div class="col-md-4 text-end">
+            <button class="btn btn-sm btn-outline-primary">
+              <i class="fas fa-download"></i> Export Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="stat-card p-4">
+          <h6 class="mb-2 text-muted">Total Logs</h6>
+          <h2 class="mb-1">156</h2>
+          <small class="text-muted">Last 30 days</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card p-4">
+          <h6 class="mb-2 text-muted">User Changes</h6>
+          <h2 class="mb-1">42</h2>
+          <small class="text-muted">Creations, updates, deletions</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card p-4">
+          <h6 class="mb-2 text-muted">Logins</h6>
+          <h2 class="mb-1">87</h2>
+          <small class="text-muted">Admin access events</small>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="stat-card p-4">
+          <h6 class="mb-2 text-muted">Password Resets</h6>
+          <h2 class="mb-1">27</h2>
+          <small class="text-muted">Security actions</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters/Controls -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-3">
+            <input type="search" class="form-control" placeholder="Search by admin name or action">
+          </div>
+          <div class="col-md-2">
+            <select class="form-select">
+              <option selected>All Actions</option>
+              <option>Create User</option>
+              <option>Update User</option>
+              <option>Delete User</option>
+              <option>Login</option>
+              <option>Logout</option>
+              <option>Reset Password</option>
+              <option>Change Role</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <input type="date" class="form-control" value="2025-11-30">
+          </div>
+          <div class="col-md-2">
+            <select class="form-select">
+              <option selected>All Admins</option>
+              <option>Dr. Maria Santos</option>
+              <option>Dr. Eduardo Reyes</option>
+              <option>Mr. Carlos Mendoza</option>
+            </select>
+          </div>
+          <div class="col-md-3 text-end">
+            <button class="btn btn-sm btn-outline-secondary w-100">
+              <i class="fas fa-sync"></i> Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Logs Table -->
+    <div class="table-section mb-4 shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 40px;"></th>
+              <th>Timestamp</th>
+              <th>Admin</th>
+              <th>Action</th>
+              <th>Target User</th>
+              <th>Details</th>
+              <th>IP Address</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Create User Actions -->
+            <tr>
+              <td><i class="fas fa-plus-circle icon-create fa-lg"></i></td>
+              <td>2025-11-30 14:35:22</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-create">Create User</span></td>
+              <td>Juan Santos</td>
+              <td>Created new student account</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-plus-circle icon-create fa-lg"></i></td>
+              <td>2025-11-30 13:20:15</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-create">Create User</span></td>
+              <td>Prof. Beatriz Coronel</td>
+              <td>Created new faculty account</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-plus-circle icon-create fa-lg"></i></td>
+              <td>2025-11-29 16:45:08</td>
+              <td>Mr. Carlos Mendoza</td>
+              <td><span class="badge badge-create">Create User</span></td>
+              <td>Nurse Jennifer Garcia</td>
+              <td>Created new clinic staff account</td>
+              <td>192.168.1.60</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+            <!-- Update User Actions -->
+            <tr>
+              <td><i class="fas fa-edit icon-update fa-lg"></i></td>
+              <td>2025-11-30 12:15:42</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-update">Update User</span></td>
+              <td>Prof. Carmen Fernandez</td>
+              <td>Changed role from Faculty to Admin</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-edit icon-update fa-lg"></i></td>
+              <td>2025-11-30 11:30:18</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-update">Update User</span></td>
+              <td>Maria Garcia</td>
+              <td>Updated email address</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-edit icon-update fa-lg"></i></td>
+              <td>2025-11-29 10:22:35</td>
+              <td>Mr. Carlos Mendoza</td>
+              <td><span class="badge badge-update">Update User</span></td>
+              <td>Dr. Robert Lopez</td>
+              <td>Updated contact information</td>
+              <td>192.168.1.60</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+            <!-- Delete User Actions -->
+            <tr>
+              <td><i class="fas fa-trash icon-delete fa-lg"></i></td>
+              <td>2025-11-28 15:45:50</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-delete">Delete User</span></td>
+              <td>Inactive Account (ID: 20)</td>
+              <td>Deactivated inactive student account</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-trash icon-delete fa-lg"></i></td>
+              <td>2025-11-27 09:12:33</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-delete">Delete User</span></td>
+              <td>Inactive Account (ID: 15)</td>
+              <td>Removed expired temporary account</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+            <!-- Reset Password Actions -->
+            <tr>
+              <td><i class="fas fa-key icon-reset fa-lg"></i></td>
+              <td>2025-11-30 14:00:25</td>
+              <td>Mr. Carlos Mendoza</td>
+              <td><span class="badge badge-reset">Reset Password</span></td>
+              <td>Prof. Juan Dela Cruz</td>
+              <td>Initiated password reset request</td>
+              <td>192.168.1.60</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-key icon-reset fa-lg"></i></td>
+              <td>2025-11-29 11:55:12</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-reset">Reset Password</span></td>
+              <td>Carlos Rodriguez</td>
+              <td>Student password reset completed</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-key icon-reset fa-lg"></i></td>
+              <td>2025-11-28 08:30:44</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-reset">Reset Password</span></td>
+              <td>Nurse Patricia Ruiz</td>
+              <td>Staff password reset completed</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+            <!-- Login Actions -->
+            <tr>
+              <td><i class="fas fa-sign-in-alt icon-login fa-lg"></i></td>
+              <td>2025-11-30 07:30:15</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-login">Login</span></td>
+              <td>—</td>
+              <td>Admin logged in to system</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-sign-in-alt icon-login fa-lg"></i></td>
+              <td>2025-11-30 08:15:42</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-login">Login</span></td>
+              <td>—</td>
+              <td>Admin logged in to system</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-sign-in-alt icon-login fa-lg"></i></td>
+              <td>2025-11-30 09:45:18</td>
+              <td>Mr. Carlos Mendoza</td>
+              <td><span class="badge badge-login">Login</span></td>
+              <td>—</td>
+              <td>Admin logged in to system</td>
+              <td>192.168.1.60</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+            <!-- Logout Actions -->
+            <tr>
+              <td><i class="fas fa-sign-out-alt icon-logout fa-lg"></i></td>
+              <td>2025-11-29 18:22:35</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-logout">Logout</span></td>
+              <td>—</td>
+              <td>Admin logged out from system</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-secondary">Completed</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-sign-out-alt icon-logout fa-lg"></i></td>
+              <td>2025-11-29 17:40:12</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-logout">Logout</span></td>
+              <td>—</td>
+              <td>Admin logged out from system</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-secondary">Completed</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-sign-out-alt icon-logout fa-lg"></i></td>
+              <td>2025-11-29 16:55:08</td>
+              <td>Mr. Carlos Mendoza</td>
+              <td><span class="badge badge-logout">Logout</span></td>
+              <td>—</td>
+              <td>Admin logged out from system</td>
+              <td>192.168.1.60</td>
+              <td><span class="badge bg-secondary">Completed</span></td>
+            </tr>
+
+            <!-- Change Role Actions -->
+            <tr>
+              <td><i class="fas fa-edit icon-update fa-lg"></i></td>
+              <td>2025-11-28 13:10:25</td>
+              <td>Dr. Maria Santos</td>
+              <td><span class="badge badge-update">Change Role</span></td>
+              <td>Prof. Angelito Mercado</td>
+              <td>Changed role from Faculty to Admin</td>
+              <td>192.168.1.45</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+            <tr>
+              <td><i class="fas fa-edit icon-update fa-lg"></i></td>
+              <td>2025-11-27 14:35:42</td>
+              <td>Dr. Eduardo Reyes</td>
+              <td><span class="badge badge-update">Change Role</span></td>
+              <td>Dr. Stephanie Cruz</td>
+              <td>Changed role from Clinic Staff to Faculty</td>
+              <td>192.168.1.52</td>
+              <td><span class="badge bg-success">Success</span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="alert alert-info mb-4" role="alert">
+      <i class="fas fa-info-circle"></i> <strong>Note:</strong> All activities are logged with timestamps, admin name, target user, IP address, and action details for complete audit trail and security purposes.
+    </div>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
