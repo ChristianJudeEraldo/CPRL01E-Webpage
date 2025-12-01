@@ -126,8 +126,8 @@
             <div class="card-body">
               <div class="status-row">
                 <div class="status-pill pill-normal"><i class="fas fa-check-circle me-2"></i>OK</div>
-                <div class="status-pill pill-warning"><i class="fas fa-triangle-exclamation me-2"></i>Warning</div>
-                <div class="status-pill pill-alert"><i class="fas fa-bell me-2"></i>Alert</div>
+                <div class="status-pill pill-alert"><i class="fas fa-triangle-exclamation me-2"></i>Warning</div>
+                
               </div>
 
               <div class="activity-card">
@@ -140,9 +140,8 @@
               </div>
 
               <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-                <button class="btn btn-outline-secondary btn-sm">View Details</button>
-                <button class="btn btn-primary btn-sm" onclick="alert('Start new assessment (demo)')">New Assessment</button>
-                <button class="btn btn-light btn-sm" onclick="downloadReport()">Export</button>
+               
+              
               </div>
             </div>
           </div>
@@ -150,9 +149,9 @@
           <div style="height:14px"></div>
 
           <div class="card">
-            <div class="card-header">Recent Notes</div>
+            <div class="card-header">Recent Assessment</div>
             <div class="card-body" style="min-height:80px">
-              <div style="color:var(--muted)">No notes available. You can add notes from the activity details.</div>
+              <div style="color:var(--muted)">Assessment can be viewed here...</div>
             </div>
           </div>
         </div>
@@ -168,9 +167,10 @@
             <div class="card-header">Activity Timeline</div>
             <div class="card-body timeline">
               <div class="timeline-item">
-                <div class="timeline-dot"></div>
+                <div class="timeline-dot" style="background:#28a745"></div>
                 <div>
                   <div class="timeline-meta">2025-12-01 • 08:15 AM</div>
+                  
                   <div style="color:var(--muted)">Routine scan — <strong style="color:#28a745">Normal</strong></div>
                 </div>
               </div>
@@ -184,20 +184,14 @@
               </div>
 
               <div class="timeline-item">
-                <div class="timeline-dot" style="background:#ffc107"></div>
+                <div class="timeline-dot" style="background:#ff0202"></div>
                 <div>
                   <div class="timeline-meta">2025-11-29 • 08:20 AM</div>
-                  <div style="color:var(--muted)">Follow-up — <strong style="color:#d39e00">Check recommended</strong></div>
+                  <div style="color:var(--muted)">Follow-up — <strong style="color:#ff0202">Checkup recommended</strong></div>
                 </div>
               </div>
 
-              <div class="timeline-item">
-                <div class="timeline-dot" style="background:#dc3545"></div>
-                <div>
-                  <div class="timeline-meta">2025-11-28 • 07:30 AM</div>
-                  <div style="color:var(--muted)">Alert — <strong style="color:#dc3545">Action taken</strong></div>
-                </div>
-              </div>
+             
 
             </div>
           </div>
@@ -218,8 +212,8 @@
                 <div style="display:flex;gap:8px;margin-top:8px">
                   <button class="btn btn-sm btn-outline-secondary" onclick="filterStatus('all')">All</button>
                   <button class="btn btn-sm btn-outline-success" onclick="filterStatus('normal')">Normal</button>
-                  <button class="btn btn-sm btn-outline-warning" onclick="filterStatus('warning')">Warning</button>
-                  <button class="btn btn-sm btn-outline-danger" onclick="filterStatus('alert')">Alert</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="filterStatus('warning')">Warning</button>
+                  
                 </div>
               </div>
 
