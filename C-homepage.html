@@ -1,0 +1,329 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Access Portal — Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+
+  <style>
+    :root{
+      --primary:#8c0001;
+      --primary-dark:#6f0001;
+      --muted:#6c757d;
+      --card-border: rgba(140,0,1,0.06);
+      --glass: rgba(255,255,255,0.85);
+    }
+    html,body{height:100%;margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#ec7878,#fbfbfc);color:#222}
+    .top-bar{background:linear-gradient(90deg,var(--primary),var(--primary-dark));padding:12px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+    .top-bar .app-branding{display:flex;align-items:center;gap:10px;font-weight:700}
+    .top-bar img{height:44px}
+    .nav-menu{background:var(--glass);backdrop-filter:blur(6px);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .nav-links{display:flex;gap:18px;align-items:center}
+    .nav-link{color:#222;text-decoration:none;padding:10px 8px;border-radius:8px;font-weight:600}
+    .nav-link.active{color:var(--primary);background:rgba(140,0,1,0.06)}
+    .logout-btn{background:var(--primary);border:0;color:#fff;padding:.45rem .85rem;border-radius:8px;font-weight:700}
+    .app-shell{max-width:1100px;margin:24px auto;padding:0 18px}
+
+    .card{border-radius:12px;border:1px solid var(--card-border);box-shadow:0 8px 24px rgba(0,0,0,0.06);overflow:hidden;background:#fff}
+    .card .card-header{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;padding:14px 18px}
+    .card .card-body{padding:18px}
+
+    /* New layout: dashboard split into left column (summary tiles) and right column (main panel) */
+    .dashboard-grid{display:grid;grid-template-columns:320px 1fr;gap:18px}
+    .summary-tile{padding:16px;border-radius:10px;background:linear-gradient(180deg,#fff,#fff7f7);border:1px solid var(--card-border);margin-bottom:12px}
+    .summary-title{font-size:.85rem;color:var(--muted);margin-bottom:6px}
+    .summary-value{font-weight:800;font-size:1.4rem;color:var(--primary)}
+    .summary-sub{font-size:.88rem;color:var(--muted);margin-top:8px}
+
+    .main-panel .status-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .status-pill{padding:8px 12px;border-radius:999px;font-weight:700;font-size:.9rem}
+    .pill-normal{background:rgba(40,167,69,0.08);color:#28a745}
+    .pill-warning{background:rgba(255,193,7,0.08);color:#d39e00}
+    .pill-alert{background:rgba(220,53,69,0.08);color:#dc3545}
+
+    .activity-card{display:flex;gap:14px;align-items:center;padding:14px;border-radius:10px;background:linear-gradient(180deg,#fff,#fffdfd);border:1px solid var(--card-border)}
+    .activity-thumb{width:140px;height:100px;border-radius:8px;object-fit:cover;border:1px solid #eee}
+    .activity-info .meta{color:var(--muted);font-size:.9rem;margin-bottom:6px}
+    .activity-info .desc{font-weight:700;color:#222}
+
+    /* History: timeline style on left, filter/summary on right */
+    .history-grid{display:grid;grid-template-columns:1fr 300px;gap:18px}
+    .timeline{padding:12px}
+    .timeline-item{display:flex;gap:12px;padding:12px;border-radius:10px;background:#fff7f7;border:1px solid var(--card-border);margin-bottom:10px;align-items:center}
+    .timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--primary);flex-shrink:0}
+    .timeline-meta{font-weight:700}
+    .history-panel{padding:12px;position:relative}
+    .history-filter label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:6px}
+
+    /* Profile: left info cards, right editable form */
+    .profile-grid{display:grid;grid-template-columns:360px 1fr;gap:18px}
+    .info-card{padding:14px;border-radius:10px;background:linear-gradient(180deg,#fff,#fffdfd);border:1px solid var(--card-border)}
+    .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(0,0,0,0.04)}
+    .info-row:last-child{border-bottom:0}
+    .edit-form .form-control{border-radius:8px}
+
+    /* Responsive */
+    @media (max-width:980px){
+      .dashboard-grid,.history-grid,.profile-grid{grid-template-columns:1fr;gap:12px}
+      .summary-tile{display:flex;justify-content:space-between;align-items:center}
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <div class="app-branding">
+    
+      <span>Access Portal</span>
+    </div>
+    <button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+  </header>
+
+  <nav class="nav-menu">
+    <div class="nav-links">
+      <a class="nav-link active" href="#" data-tab="dashboard"><i class="fas fa-chart-simple me-2"></i>Dashboard</a>
+      <a class="nav-link" href="#" data-tab="history"><i class="fas fa-clock-rotate-left me-2"></i>History</a>
+      <a class="nav-link" href="#" data-tab="profile"><i class="fas fa-user-gear me-2"></i>Profile</a>
+    </div>
+    <div style="font-size:.9rem;color:var(--muted)">Signed in as <strong id="userName">Christian Jude Eraldo</strong></div>
+  </nav>
+
+  <main class="app-shell">
+
+    <!-- Dashboard summary -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="dashboard-grid">
+
+        <!-- Left: compact summary column -->
+        <div>
+          <div class="summary-tile">
+            <div class="summary-title">Overall Status</div>
+            <div class="summary-value">Active</div>
+            <div class="summary-sub">Last scan: 08:15 AM</div>
+          </div>
+
+          <div class="summary-tile">
+            <div class="summary-title">Recent Alerts</div>
+            <div class="summary-value">0</div>
+            <div class="summary-sub">No alerts in last 7 days</div>
+          </div>
+
+          <div class="summary-tile">
+            <div class="summary-title">Assessments</div>
+            <div class="summary-value">4</div>
+            <div class="summary-sub">Past month</div>
+          </div>
+        </div>
+
+        <!-- Right: main panel with status badges and activity -->
+        <div class="main-panel">
+          <div class="card">
+            <div class="card-header"><div style="display:flex;justify-content:space-between;align-items:center"><div>Activity Overview</div><div style="font-size:.9rem;color:var(--muted)">Today</div></div></div>
+            <div class="card-body">
+              <div class="status-row">
+                <div class="status-pill pill-normal"><i class="fas fa-check-circle me-2"></i>OK</div>
+                <div class="status-pill pill-warning"><i class="fas fa-triangle-exclamation me-2"></i>Warning</div>
+                <div class="status-pill pill-alert"><i class="fas fa-bell me-2"></i>Alert</div>
+              </div>
+
+              <div class="activity-card">
+                <img class="activity-thumb" src="img/def.jpg" alt="Recent">
+                <div class="activity-info">
+                  <div class="meta">Scan • 2025-12-01 • 08:15 AM</div>
+                  <div class="desc">No abnormalities detected</div>
+                  <div style="margin-top:10px;color:var(--muted)">Location: Campus Health Center</div>
+                </div>
+              </div>
+
+              <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-outline-secondary btn-sm">View Details</button>
+                <button class="btn btn-primary btn-sm" onclick="alert('Start new assessment (demo)')">New Assessment</button>
+                <button class="btn btn-light btn-sm" onclick="downloadReport()">Export</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="height:14px"></div>
+
+          <div class="card">
+            <div class="card-header">Recent Notes</div>
+            <div class="card-body" style="min-height:80px">
+              <div style="color:var(--muted)">No notes available. You can add notes from the activity details.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- History: timeline + filters -->
+    <div id="tab-history" class="tab-content" style="display:none">
+      <div class="history-grid">
+        <div>
+          <div class="card">
+            <div class="card-header">Activity Timeline</div>
+            <div class="card-body timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div>
+                  <div class="timeline-meta">2025-12-01 • 08:15 AM</div>
+                  <div style="color:var(--muted)">Routine scan — <strong style="color:#28a745">Normal</strong></div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#28a745"></div>
+                <div>
+                  <div class="timeline-meta">2025-11-30 • 07:45 AM</div>
+                  <div style="color:var(--muted)">Routine scan — <strong style="color:#28a745">Normal</strong></div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#ffc107"></div>
+                <div>
+                  <div class="timeline-meta">2025-11-29 • 08:20 AM</div>
+                  <div style="color:var(--muted)">Follow-up — <strong style="color:#d39e00">Check recommended</strong></div>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-dot" style="background:#dc3545"></div>
+                <div>
+                  <div class="timeline-meta">2025-11-28 • 07:30 AM</div>
+                  <div style="color:var(--muted)">Alert — <strong style="color:#dc3545">Action taken</strong></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-header">Filters & Summary</div>
+            <div class="card-body history-panel">
+              <div class="history-filter mb-3">
+                <label for="dateFrom">Date range</label>
+                <input id="dateFrom" type="date" class="form-control form-control-sm mb-2">
+                <input id="dateTo" type="date" class="form-control form-control-sm">
+              </div>
+
+              <div style="margin-top:10px">
+                <label class="d-block" style="font-size:.85rem;color:var(--muted)">Status</label>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button class="btn btn-sm btn-outline-secondary" onclick="filterStatus('all')">All</button>
+                  <button class="btn btn-sm btn-outline-success" onclick="filterStatus('normal')">Normal</button>
+                  <button class="btn btn-sm btn-outline-warning" onclick="filterStatus('warning')">Warning</button>
+                  <button class="btn btn-sm btn-outline-danger" onclick="filterStatus('alert')">Alert</button>
+                </div>
+              </div>
+
+              <div style="margin-top:18px">
+                <div style="font-size:.85rem;color:var(--muted)">Summary</div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px">
+                  <div><strong>Assessments</strong></div><div>4</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px">
+                  <div><strong>Alerts</strong></div><div>1</div>
+                </div>
+              </div>
+
+              <div style="margin-top:18px">
+                <button class="btn btn-primary w-100" onclick="alert('Export timeline (demo)')">Export Timeline</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile: left info blocks + right edit form -->
+    <div id="tab-profile" class="tab-content" style="display:none">
+      <div class="profile-grid">
+        <div>
+          <div class="info-card card">
+            <div class="card-header">Account Summary</div>
+            <div class="card-body">
+              <div class="info-row"><div class="text-muted">Campus ID</div><div>202312345</div></div>
+              <div class="info-row"><div class="text-muted">Full Name</div><div>Christian Jude E. Eraldo</div></div>
+              <div class="info-row"><div class="text-muted">Course & Year</div><div>BS Computer Engineering - 4th Year</div></div>
+              <div class="info-row"><div class="text-muted">Department</div><div>College of Engineering</div></div>
+              
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card edit-form">
+            <div class="card-header">Edit Profile</div>
+            <div class="card-body">
+              <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input class="form-control form-control-sm" id="fullName" value="Christian Jude E. Eraldo">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Course & Year</label>
+                  <input class="form-control form-control-sm" id="course" value="BS Computer Engineering - 4th Year">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Department</label>
+                  <input class="form-control form-control-sm" id="dept" value="College of Engineering">
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" onclick="resetProfile()">Reset</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Tab switching (keeps previous behavior)
+    document.querySelectorAll('[data-tab]').forEach(link=>{
+      link.addEventListener('click', e=>{
+        e.preventDefault();
+        const name = link.getAttribute('data-tab');
+        document.querySelectorAll('.tab-content').forEach(t=>t.style.display='none');
+        const el = document.getElementById('tab-'+name);
+        if(el) el.style.display='block';
+        document.querySelectorAll('.nav-link').forEach(n=>n.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', ()=>{ location.href='C-login.html' });
+
+    // Small demo functions
+    function downloadReport(){ alert('Download report (demo)') }
+    function filterStatus(s){ alert('Filter: '+s+' (demo)') }
+
+    function saveProfile(e){
+      e.preventDefault();
+      const name = document.getElementById('fullName').value;
+      document.getElementById('userName').textContent = name;
+      alert('Profile saved (demo)');
+    }
+    function resetProfile(){
+      document.getElementById('fullName').value = 'Christian Jude E. Eraldo';
+      document.getElementById('course').value = 'BS Computer Engineering - 4th Year';
+      document.getElementById('dept').value = 'College of Engineering';
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
